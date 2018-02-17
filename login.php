@@ -15,11 +15,12 @@ if ($_POST) {
         require 'libs/PasswordHash.php';
 
         // prepare query
-        $query = "select email, password from users where email = ? limit 0,1";
+        $query = "select email, password from users where email = :email limit 0,1";
         $stmt  = $con->prepare($query);
+        $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 
         // this will represent the first question mark
-        $stmt->bindParam(1, $_POST['email']);
+        $statement->bindParam(':email', $email, \PDO::PARAM_STR);
 
         // execute our query
         $stmt->execute();

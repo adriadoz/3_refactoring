@@ -23,6 +23,8 @@
             $salt     = "ilovecodeofaninjabymikedalisay";
             $password = $salt . $_POST['password'];
 
+            $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+
             /*
              * '8' - base-2 logarithm of the iteration count used for password stretching
              * 'false' - do we require the hashes to be portable to older systems (less secure)?
@@ -31,15 +33,15 @@
             $password = $hasher->HashPassword($password);
 
             // insert command
-            $query = "INSERT INTO users SET email = ?, password = ?";
+            $query = "INSERT INTO users SET email = :email, password = :password";
 
-            $stmt = $con->prepare($query);
+            $statement = $con->prepare($query);
 
-            $stmt->bindParam(1, $_POST['email']);
-            $stmt->bindParam(2, $password);
+            $statement->bindParam(':email', $email, \PDO::PARAM_STR);
+            $statement->bindParam(':password', $password, \PDO::PARAM_STR);
 
             // execute the query
-            if ($stmt->execute()) {
+            if ($statement->execute()) {
                 echo "<div>Successful registration.</div>";
             } else {
                 echo "<div>Unable to register. <a href='register.php'>Please try again.</a></div>";

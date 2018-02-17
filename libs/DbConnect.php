@@ -2,7 +2,7 @@
 $host     = "localhost";
 $db_name  = "coan_secure";
 $username = "root";
-$password = "";
+$password = "root";
 
 try {
     $con = new PDO("mysql:host={$host};dbname={$db_name}", $username, $password);
