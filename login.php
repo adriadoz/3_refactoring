@@ -1,37 +1,34 @@
-<html>
-<head>
-    <title>login page - php salt and hash password - www.codeofaninja.com</title>
-    <link type="text/css" rel="stylesheet" href="css/style.css"/>
-</head>
-<body>
-<div id="loginForm">
 <?php
-// form is submitted, check if acess will be granted
-if ($_POST) {
+declare(strict_types=1);
 
-    try {
+require __DIR__ . '/init.php';
+
+if ($_POST)
+{
+    try
+    {
         // load database connection and password hasher library
         require 'libs/DbConnect.php';
         require 'libs/PasswordHash.php';
 
         // prepare query
         $query = "select email, password from users where email = :email limit 0,1";
-        $stmt  = $con->prepare($query);
+        $statement  = $con->prepare($query);
         $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 
         // this will represent the first question mark
         $statement->bindParam(':email', $email, \PDO::PARAM_STR);
 
         // execute our query
-        $stmt->execute();
+        $statement->execute();
 
         // count the rows returned
-        $num = $stmt->rowCount();
+        $num = $statement->rowCount();
 
         if ($num == 1) {
 
             //store retrieved row to a 'row' variable
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $row = $statement->fetch(PDO::FETCH_ASSOC);
 
             // hashed password saved in the database
             $storedPassword = $row['password'];
@@ -50,53 +47,23 @@ if ($_POST) {
              * you may use my php login script with php sessions tutorial :)
              */
             if ($check) {
-                echo "<div>Access granted.</div>";
+                echo $twig->render('Pages/response.twig', ['title' => 'Login', 'message' => 'Access granted.']);
             } // $check variable is false, access denied.
             else {
-                echo "<div>Access denied. <a href='login.php'>Back.</a></div>";
+                echo $twig->render('Pages/response.twig', ['title' => 'Login', 'message' => 'Access denied.', 'backvisible'=>true, 'backlink'=>'login.php', 'backtext'=>'Back.']);
             }
         } // no rows returned, access denied
         else {
-            echo "<div>Access denied. <a href='login.php'>Back.</a></div>";
+            echo $twig->render('Pages/response.twig', ['title' => 'Login', 'message' => 'Access denied.', 'backvisible'=>true, 'backlink'=>'login.php', 'backtext'=>'Back.']);
         }
     } //to handle error
-    catch (PDOException $exception) {
+    catch (PDOException $exception)
+    {
         echo "Error: " . $exception->getMessage();
     }
-} // show the registration form
-else {
-    ?>
-    <!--
-        -where the user will enter his email and password
-        -required during login
-        -we are using HTML5 'email' type, 'required' keyword for a some validation, and a 'placeholder' for better UI
-    -->
-    <form action="login.php" method="post">
-
-        <div id="formHeader">Website Login</div>
-
-        <div id="formBody">
-            <div class="formField">
-                <input type="email" name="email" required placeholder="Email"/>
-            </div>
-
-            <div class="formField">
-                <input type="password" name="password" required placeholder="Password"/>
-            </div>
-
-            <div>
-                <input type="submit" value="Login" class="customButton"/>
-            </div>
-        </div>
-        <div id='userNotes'>
-            New here? <a href='register.php'>Register for free</a>
-        </div>
-    </form>
-
-    <?php
 }
-?>
+else
+{
+    echo $twig->render('Pages/login.twig', ['title' => 'Login']);
+}
 
-</div>
-</body>
-</html>

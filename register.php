@@ -1,92 +1,53 @@
-<html>
-<head>
-    <title>registration page - php salt and hash password - www.codeofaninja.com</title>
-    <link type="text/css" rel="stylesheet" href="css/style.css"/>
-</head>
-<body>
+<?php
+declare(strict_types=1);
 
-<div id="loginForm">
+require __DIR__ . '/init.php';
 
-    <?php
-    // save the username and password
-    if ($_POST) {
 
-        try {
-            // load database connection and password hasher library
-            require 'libs/DbConnect.php';
-            require 'libs/PasswordHash.php';
+if ($_POST) {
 
-            /*
-             * -prepare password to be saved
-             * -concatinate the salt and entered password
-             */
-            $salt     = "ilovecodeofaninjabymikedalisay";
-            $password = $salt . $_POST['password'];
+    try {
+        // load database connection and password hasher library
+        require 'libs/DbConnect.php';
+        require 'libs/PasswordHash.php';
 
-            $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+        /*
+         * -prepare password to be saved
+         * -concatinate the salt and entered password
+         */
+        $salt     = "ilovecodeofaninjabymikedalisay";
+        $password = $salt . $_POST['password'];
 
-            /*
-             * '8' - base-2 logarithm of the iteration count used for password stretching
-             * 'false' - do we require the hashes to be portable to older systems (less secure)?
-             */
-            $hasher   = new PasswordHash(8, false);
-            $password = $hasher->HashPassword($password);
+        $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 
-            // insert command
-            $query = "INSERT INTO users SET email = :email, password = :password";
+        /*
+         * '8' - base-2 logarithm of the iteration count used for password stretching
+         * 'false' - do we require the hashes to be portable to older systems (less secure)?
+         */
+        $hasher   = new PasswordHash(8, false);
+        $password = $hasher->HashPassword($password);
 
-            $statement = $con->prepare($query);
+        // insert command
+        $query = "INSERT INTO users SET email = :email, password = :password";
 
-            $statement->bindParam(':email', $email, \PDO::PARAM_STR);
-            $statement->bindParam(':password', $password, \PDO::PARAM_STR);
+        $statement = $con->prepare($query);
 
-            // execute the query
-            if ($statement->execute()) {
-                echo "<div>Successful registration.</div>";
-            } else {
-                echo "<div>Unable to register. <a href='register.php'>Please try again.</a></div>";
-            }
-        } //to handle error
-        catch (PDOException $exception) {
-            echo "Error: " . $exception->getMessage();
+        $statement->bindParam(':email', $email, \PDO::PARAM_STR);
+        $statement->bindParam(':password', $password, \PDO::PARAM_STR);
+
+        // execute the query
+        if ($statement->execute()) {
+            echo $twig->render('Pages/response.twig', ['title' => 'Login', 'message' => 'Successful registration.']);
+        } else {
+            echo $twig->render('Pages/response.twig', ['title' => 'Registration', 'message' => 'Unable to register.', 'backvisible'=>true, 'backlink'=>'register.php', 'backtext'=>'Please try again.']);
         }
-    } // show the registration form
-    else {
-        ?>
-
-        <!--
-            -where the user will enter his email and password
-            -required during registration
-            -we are using HTML5 'email' type, 'required' keyword for a some validation, and a 'placeholder' for better UI
-        -->
-        <form action="register.php" method="post">
-
-            <div id="formHeader">Registration Form</div>
-
-            <div id="formBody">
-                <div class="formField">
-                    <input type="email" name="email" required placeholder="Email"/>
-                </div>
-
-                <div class="formField">
-                    <input type="password" name="password" required placeholder="Password"/>
-                </div>
-
-                <div>
-                    <input type="submit" value="Register" class="customButton"/>
-                </div>
-                <div id='userNotes'>
-                    Already have an account? <a href='login.php'>Login</a>
-                </div>
-            </div>
-
-        </form>
-
-        <?php
+    } //to handle error
+    catch (PDOException $exception) {
+        echo "Error: " . $exception->getMessage();
     }
-    ?>
+}
+else {
+    echo $twig->render('Pages/register.twig', ['title' => 'Registration']);
+}
 
-</div>
 
-</body>
-</html>

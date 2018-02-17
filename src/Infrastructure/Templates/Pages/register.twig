@@ -1,0 +1,21 @@
+{% extends 'layout.twig'%}
+
+{% block head %}
+    {% include 'Heads/head.twig' with {'title': title} only %}
+{% endblock %}
+
+{% block body %}
+    <div id="loginForm">
+        {% if formvisible == false %}
+            <form action="register.php" method="post">
+                <div id="formHeader">{{ title }} Form</div>
+                <div id="formBody">
+                    {% include 'Shared/form.twig' with {'buttontext': 'Register'} only %}
+                    <div id='userNotes'>
+                        Already have an account? <a href='login.php'>Login</a>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

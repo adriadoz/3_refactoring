@@ -1,0 +1,16 @@
+{% extends 'layout.twig'%}
+
+{% block head %}
+    {% include 'Heads/head.twig' with {'title': title} only %}
+{% endblock %}
+
+{% block body %}
+    <div id="loginForm">
+        <div>
+            {{ message }}
+        {% if backvisible == true %}
+            <a href={{ backlink }}>{{ backtext }}</a>
+        {% endif %}
+        </div>
+    </div>
+{% endblock %}
