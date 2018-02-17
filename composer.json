@@ -1,0 +1,22 @@
+{
+  "name": "3_refactoring-adriavelardos",
+  "description": "Register and login",
+  "type": "Login",
+  "license": "propietary",
+  "require": {
+    "php": "^7.1",
+    "twig/twig": "^2.0"
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Domain\\": "src/Domain/",
+      "Application\\": "src/Application/",
+      "Infrastructure\\": "src/Infrastructure/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true
+  }
+}
