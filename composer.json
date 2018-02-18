@@ -11,9 +11,9 @@
   "prefer-stable": true,
   "autoload": {
     "psr-4": {
-      "Domain\\": "src/Domain/",
-      "Application\\": "src/Application/",
-      "Infrastructure\\": "src/Infrastructure/"
+      "LoginApp\\Domain\\": "src/Domain/",
+      "LoginApp\\Application\\": "src/Application/",
+      "LoginApp\\Infrastructure\\": "src/Infrastructure/"
     }
   },
   "config": {

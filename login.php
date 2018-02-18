@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/init.php';
 
-use Infrastructure\Controllers\Controller;
+use LoginApp\Infrastructure\Controllers\LoginController;
 
-$controller = new Controller('login');
+$controller = new LoginController('login');
 $controller->__invoke();

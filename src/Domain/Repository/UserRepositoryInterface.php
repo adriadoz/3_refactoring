@@ -1,7 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Domain\Repository;
+namespace LoginApp\Domain\Repository;
+
+use LoginApp\Domain\Model\User\User;
+use LoginApp\Domain\Model\ValueObject\Email;
 
 interface UserRepositoryInterface
 {
