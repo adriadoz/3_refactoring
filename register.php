@@ -5,5 +5,9 @@ require __DIR__ . '/init.php';
 
 use LoginApp\Infrastructure\Controllers\RegisterController;
 
-$controller = new RegisterController();
+$args = null;
+if(count($argv)>1){
+    $args = $argv;
+}
+$controller = new RegisterController($args);
 $controller->__invoke();

@@ -21,4 +21,12 @@ final class Email
     {
         return $this->email;
     }
+
+    public function validate()
+    {
+        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL))
+        {
+            throw new \InvalidArgumentException('Please, introduce a valid Email.');
+        }
+    }
 }

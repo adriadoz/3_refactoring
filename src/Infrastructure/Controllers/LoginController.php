@@ -33,7 +33,7 @@ final class LoginController
                     echo $this->twig->render('Pages/response.twig', ['title' => 'Login', 'message' => 'Access denied.', 'backvisible' => true, 'backlink' => 'login.php', 'backtext' => 'Back.']);
                 }
             }
-            catch (PDOException $exception)
+            catch (\PDOException $exception)
             {
                 echo "Error: " . $exception->getMessage();
             }
