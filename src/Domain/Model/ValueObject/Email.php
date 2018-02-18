@@ -12,7 +12,13 @@ final class Email
         $this->email = $email;
     }
 
-    public function getEmail(){
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function __toString()
+    {
         return $this->email;
     }
 }

@@ -36,8 +36,16 @@ final class MySqlUserRepository implements UserRepositoryInterface
 
         return $statement;
     }
-    public function registerNewUser(User $user)
+    public function registerNewUser(User $user):bool
     {
-        // TODO: Implement registerNewUser() method.
+        $query = "INSERT INTO users SET email = :email, password = :password";
+
+        $statement = $this->connection->prepare($query);
+        $email = $user->email();
+        $password = $user->hashCode();
+        $statement->bindParam(':email', $email, \PDO::PARAM_STR);
+        $statement->bindParam(':password', $password, \PDO::PARAM_STR);
+
+        return $statement->execute();
     }
 }

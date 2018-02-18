@@ -5,5 +5,5 @@ require __DIR__ . '/init.php';
 
 use LoginApp\Infrastructure\Controllers\LoginController;
 
-$controller = new LoginController('login');
+$controller = new LoginController();
 $controller->__invoke();

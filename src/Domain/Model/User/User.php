@@ -17,7 +17,7 @@ final class User
         $this->hashPassword = $hashPassword;
     }
 
-    public static function register($password, $email)
+    public static function register(Email $email, $password)
     {
         $hashPassword = password_hash($password, PASSWORD_DEFAULT);
         return new self($email, $hashPassword);

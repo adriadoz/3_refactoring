@@ -9,13 +9,11 @@ use LoginApp\Application\Service\LoginUserService;
 
 final class LoginController
 {
-    private $pageType;
     private $loader;
     private $twig;
 
-    public function __construct($pageType)
+    public function __construct()
     {
-        $this->pageType = $pageType;
         $this->loader = new \Twig_Loader_Filesystem(__DIR__ . '/../Templates');
         $this->twig = new \Twig_Environment( $this->loader, ['debug' => true] );
     }
