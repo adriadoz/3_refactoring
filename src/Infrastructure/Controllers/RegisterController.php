@@ -25,40 +25,55 @@ final class RegisterController
     {
         if ($_POST)
         {
-            $this->email = new Email($_POST['email']);
-            $this->email->validate();
-            $this->password = $_POST['password'];
-            try {
-                if ($this->registerUserService->__invoke($this->email, $this->password)) {
-                    echo $this->twig->render('Pages/response.twig', ['title' => 'Login', 'message' => 'Successful registration.']);
-                } else {
-                    echo $this->twig->render('Pages/response.twig', ['title' => 'Registration', 'message' => 'Unable to register.', 'backvisible' => true, 'backlink' => 'register.php', 'backtext' => 'Please try again.']);
-                }
-            }
-            catch (\PDOException $exception)
-            {
-                echo "Error: " . $exception->getMessage();
-            }
+            $this->postNewUser();
         }
         else if($this->args){
-            $this->email = new Email($this->args[1]);
-            $this->email->validate();
-            $this->password = $this->args[2];
-            try {
-                if ($this->registerUserService->__invoke($this->email, $this->password)) {
-                    echo 'Successful registration.';
-                } else {
-                    echo 'Unable to register.';
-                }
-            }
-            catch (\PDOException $exception)
-            {
-                echo "Error: " . $exception->getMessage();
-            }
+            $this->cliNewUser();
         }
         else
         {
             echo $this->twig->render('Pages/register.twig', ['title' => 'Registration']);
+        }
+    }
+
+    private function registerUser():bool
+    {
+        return $this->registerUserService->__invoke($this->email, $this->password);
+    }
+
+    private function postNewUser():void
+    {
+        $this->email = new Email($_POST['email']);
+        $this->email->validate();
+        $this->password = $_POST['password'];
+        try {
+            if ($this->registerUser()) {
+                echo $this->twig->render('Pages/response.twig', ['title' => 'Login', 'message' => 'Successful registration.']);
+            } else {
+                echo $this->twig->render('Pages/response.twig', ['title' => 'Registration', 'message' => 'Unable to register.', 'backvisible' => true, 'backlink' => 'register.php', 'backtext' => 'Please try again.']);
+            }
+        }
+        catch (\PDOException $exception)
+        {
+            echo "Error: " . $exception->getMessage();
+        }
+    }
+
+    private function cliNewUser():void
+    {
+        $this->email = new Email($this->args[1]);
+        $this->email->validate();
+        $this->password = $this->args[2];
+        try {
+            if ($this->registerUser()) {
+                echo 'Successful registration.';
+            } else {
+                echo 'Unable to register.';
+            }
+        }
+        catch (\PDOException $exception)
+        {
+            echo "Error: " . $exception->getMessage();
         }
     }
 }
