@@ -29,10 +29,6 @@ final class LoginUserService
         $dbEmail = new Email($row['email']);
         $dbUser = new User($dbEmail,$row['password']);
 
-        if($dbUser->validate($password)){
-            return true;
-        }
-
-        return $dbUser->validateLegacy($password);
+        return $dbUser->validate($password);
     }
 }

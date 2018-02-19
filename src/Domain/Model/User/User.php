@@ -37,15 +37,15 @@ final class User
     {
         if (!password_verify ( $password , $this->hashPassword ))
         {
-            return false;
+            return $this->validateLegacy($password);
         }
         return true;
     }
 
-    public function validateLegacy($password):bool
+    private function validateLegacy($password):bool
     {
         $salt                 = "ilovecodeofaninjabymikedalisay";
-        $postedPassword       = $_POST['password'];
+        $postedPassword       = $password;
         $saltedPostedPassword = $salt . $postedPassword;
         $hasher = new PasswordHash(8, false);
         return $check  = $hasher->CheckPassword($saltedPostedPassword, $this->hashPassword);
