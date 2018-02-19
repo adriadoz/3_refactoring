@@ -5,21 +5,20 @@ namespace LoginApp\Infrastructure\Controllers;
 
 use LoginApp\Application\Service\RegisterUserService;
 use LoginApp\Domain\Model\ValueObject\Email;
-use LoginApp\Infrastructure\Repository\MySQL\MySqlUserRepository;
 
 final class RegisterController
 {
-    private $loader;
     private $twig;
     private $email;
     private $password;
     private $args;
+    private $registerUserService;
 
-    public function __construct($args)
+    public function __construct($args, \Twig_Environment $twig, RegisterUserService $registerUserService)
     {
-        $this->loader = new \Twig_Loader_Filesystem(__DIR__ . '/../Templates');
-        $this->twig = new \Twig_Environment( $this->loader, ['debug' => true] );
+        $this->twig = $twig;
         $this->args = $args;
+        $this->registerUserService = $registerUserService;
     }
 
     public function __invoke():void
@@ -30,9 +29,7 @@ final class RegisterController
             $this->email->validate();
             $this->password = $_POST['password'];
             try {
-                $mySqlUserRepo = new MySqlUserRepository();
-                $registerUserService = new RegisterUserService($mySqlUserRepo);
-                if ($registerUserService->__invoke($this->email, $this->password)) {
+                if ($this->registerUserService->__invoke($this->email, $this->password)) {
                     echo $this->twig->render('Pages/response.twig', ['title' => 'Login', 'message' => 'Successful registration.']);
                 } else {
                     echo $this->twig->render('Pages/response.twig', ['title' => 'Registration', 'message' => 'Unable to register.', 'backvisible' => true, 'backlink' => 'register.php', 'backtext' => 'Please try again.']);
@@ -48,9 +45,7 @@ final class RegisterController
             $this->email->validate();
             $this->password = $this->args[2];
             try {
-                $mySqlUserRepo = new MySqlUserRepository();
-                $registerUserService = new RegisterUserService($mySqlUserRepo);
-                if ($registerUserService->__invoke($this->email, $this->password)) {
+                if ($this->registerUserService->__invoke($this->email, $this->password)) {
                     echo 'Successful registration.';
                 } else {
                     echo 'Unable to register.';
