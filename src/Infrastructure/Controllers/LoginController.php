@@ -9,13 +9,13 @@ use LoginApp\Application\Service\LoginUserService;
 
 final class LoginController
 {
-    private $loader;
+    private $loginUserService;
     private $twig;
 
-    public function __construct()
+    public function __construct(LoginUserService $loginUserService, \Twig_Environment $twig)
     {
-        $this->loader = new \Twig_Loader_Filesystem(__DIR__ . '/../Templates');
-        $this->twig = new \Twig_Environment( $this->loader, ['debug' => true] );
+        $this->loginUserService = $loginUserService;
+        $this->twig = $twig;
     }
 
     public function __invoke():void
@@ -25,9 +25,7 @@ final class LoginController
             try
             {
                 $email = new Email($_POST['email']);
-                $mySqlUserRepo = new MySqlUserRepository();
-                $loginUserService = new LoginUserService($mySqlUserRepo);
-                if($loginUserService->__invoke($email,$_POST['password'])){
+                if($this->loginUserService->__invoke($email,$_POST['password'])){
                     echo $this->twig->render('Pages/response.twig', ['title' => 'Login', 'message' => 'Access granted.']);
                 } else {
                     echo $this->twig->render('Pages/response.twig', ['title' => 'Login', 'message' => 'Access denied.', 'backvisible' => true, 'backlink' => 'login.php', 'backtext' => 'Back.']);
